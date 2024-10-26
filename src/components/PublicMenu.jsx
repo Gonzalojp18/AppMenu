@@ -22,7 +22,7 @@ function PublicMenu() {
       <div className="dishes-grid">
         {dishes.map((dish) => (
           <div key={dish._id} className="dish-card">
-            <img src={dish.imageUrl} alt={dish.name} className="dish-image" />
+            {/* <img src={dish.imageUrl} alt={dish.name} className="dish-image" /> */}
             <h2>{dish.name}</h2>
             <p>{dish.description}</p>
             <p className="price">${dish.price.toFixed(2)}</p>

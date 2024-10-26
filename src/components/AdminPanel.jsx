@@ -7,7 +7,7 @@ function AdminPanel() {
     name: '',
     description: '',
     price: '',
-    imageUrl: ''
+    // imageUrl: ''
   });
 
   useEffect(() => {
@@ -56,7 +56,7 @@ function AdminPanel() {
     <div className="admin-container">
       <h1>Panel de Administración</h1>
       <form onSubmit={handleSubmit} className="add-dish-form">
-        <h2>Agregar Nuevo Plato</h2>
+        <h2 className='mb-5'>Agregar Nuevo Plato</h2>
         <input
           type="text"
           placeholder="Nombre del plato"
@@ -77,21 +77,21 @@ function AdminPanel() {
           onChange={(e) => setNewDish({...newDish, price: e.target.value})}
           required
         />
-        <input
+        {/* <input
           type="url"
           placeholder="URL de la imagen"
           value={newDish.imageUrl}
           onChange={(e) => setNewDish({...newDish, imageUrl: e.target.value})}
           required
-        />
+        /> */}
         <button type="submit">Agregar Plato</button>
       </form>
 
       <div className="dishes-list">
-        <h2>Platos Existentes</h2>
+        {/* <h2>Platos Existentes</h2> */}
         {dishes.map((dish) => (
           <div key={dish._id} className="dish-item">
-            <img src={dish.imageUrl} alt={dish.name} className="admin-dish-image" />
+            {/* <img src={dish.imageUrl} alt={dish.name} className="admin-dish-image" /> */}
             <div className="dish-details">
               <h3>{dish.name}</h3>
               <p>{dish.description}</p>
