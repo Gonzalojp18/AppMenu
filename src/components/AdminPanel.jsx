@@ -7,8 +7,8 @@ function AdminPanel() {
     name: '',
     description: '',
     price: '',
-    // imageUrl: ''
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchDishes();
@@ -20,17 +20,21 @@ function AdminPanel() {
       setDishes(response.data);
     } catch (error) {
       console.error('Error fetching dishes:', error);
+      setErrorMessage('Error fetching dishes');
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/dishes', newDish);
-      setNewDish({ name: '', description: '', price: '', imageUrl: '' });
+      const dishToAdd = { ...newDish, price: parseFloat(newDish.price) };
+      await axios.post('http://localhost:5000/api/dishes', dishToAdd);
+      setNewDish({ name: '', description: '', price: '' });
+      setErrorMessage('');
       fetchDishes();
     } catch (error) {
       console.error('Error adding dish:', error);
+      setErrorMessage('Error adding dish, please try again');
     }
   };
 
@@ -40,74 +44,74 @@ function AdminPanel() {
       fetchDishes();
     } catch (error) {
       console.error('Error deleting dish:', error);
+      setErrorMessage('Error deleting dish');
     }
   };
 
   const handleUpdatePrice = async (id, newPrice) => {
     try {
-      await axios.put(`http://localhost:5000/api/dishes/${id}`, { price: newPrice });
+      await axios.put(`http://localhost:5000/api/dishes/${id}`, { price: parseFloat(newPrice) });
       fetchDishes();
     } catch (error) {
       console.error('Error updating price:', error);
+      setErrorMessage('Error updating price');
     }
   };
 
   return (
     <div className="admin-container">
       <h1>Panel de Administración</h1>
+      
+      {errorMessage && <p className="error">{errorMessage}</p>}
+      
       <form onSubmit={handleSubmit} className="add-dish-form">
         <h2 className='mb-5'>Agregar Nuevo Plato</h2>
         <input
           type="text"
           placeholder="Nombre del plato"
           value={newDish.name}
-          onChange={(e) => setNewDish({...newDish, name: e.target.value})}
+          onChange={(e) => setNewDish({ ...newDish, name: e.target.value })}
           required
         />
         <textarea
           placeholder="Descripción"
           value={newDish.description}
-          onChange={(e) => setNewDish({...newDish, description: e.target.value})}
+          onChange={(e) => setNewDish({ ...newDish, description: e.target.value })}
           required
         />
         <input
           type="number"
           placeholder="Precio"
           value={newDish.price}
-          onChange={(e) => setNewDish({...newDish, price: e.target.value})}
+          onChange={(e) => setNewDish({ ...newDish, price: e.target.value })}
           required
         />
-        {/* <input
-          type="url"
-          placeholder="URL de la imagen"
-          value={newDish.imageUrl}
-          onChange={(e) => setNewDish({...newDish, imageUrl: e.target.value})}
-          required
-        /> */}
         <button type="submit">Agregar Plato</button>
       </form>
 
       <div className="dishes-list">
-        {/* <h2>Platos Existentes</h2> */}
-        {dishes.map((dish) => (
-          <div key={dish._id} className="dish-item">
-            {/* <img src={dish.imageUrl} alt={dish.name} className="admin-dish-image" /> */}
-            <div className="dish-details">
-              <h3>{dish.name}</h3>
-              <p>{dish.description}</p>
-              <div className="price-control">
-                <input
-                  type="number"
-                  value={dish.price}
-                  onChange={(e) => handleUpdatePrice(dish._id, e.target.value)}
-                />
+        {dishes.length > 0 ? (
+          dishes.map((dish) => (
+            <div key={dish.id} className="dish-item">
+              <div className="dish-details">
+                <h3>{dish.name}</h3>
+                <p>{dish.description}</p>
+                <div className="price-control">
+                  <input
+                    type="number"
+                    value={dish.price}
+                    onChange={(e) => handleUpdatePrice(dish.id, e.target.value)}
+                  />
+                </div>
+                <button onClick={() => handleDelete(dish.id)} className="delete-btn">
+                  Eliminar
+                </button>
               </div>
-              <button onClick={() => handleDelete(dish._id)} className="delete-btn">
-                Eliminar
-              </button>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No hay platos disponibles</p>
+        )}
       </div>
     </div>
   );
